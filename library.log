@@ -102,3 +102,4 @@
 2025-07-18 22:25:58,446	INFO	预约成功<br/>您已违约2次,详情请登录web端或联系管理员
 2025-07-19 22:24:50,237	INFO	预约成功<br/>您已违约2次,详情请登录web端或联系管理员
 2025-07-20 22:25:24,460	INFO	预约成功<br/>您已违约2次,详情请登录web端或联系管理员
+2025-07-21 22:27:47,433	ERROR	An error occurred: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
