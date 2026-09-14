@@ -1,5 +1,3 @@
-pandas
 requests
-configparser
-pycryptodomex
 beautifulsoup4
+cryptography
