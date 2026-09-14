@@ -2,38 +2,71 @@ name: CSU Library Reserve
 
 on:
   workflow_dispatch:
-
+    inputs:
+      action:
+        description: '手动运行模式'
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - reserve
   schedule:
-    - cron: '00 22 * * *'
+    # 北京时间 05:55 启动 runner，准备完后等到 06:00 提交预约。
+    - cron: '55 5 * * *'
+      timezone: 'Asia/Shanghai'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: csu-library-reserve
+  cancel-in-progress: false
 
 jobs:
   reserve:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v6
 
-    - name: Install Python
-      run: |
-        sudo apt update && \
-        sudo apt install python3
-      
-    - name: requirements
-      run: |
-        pip3 install -r requirements.txt
-        
-    - name: Reserve
-      run: |
-        user='${{ secrets.USER }}'
-        pwd='${{ secrets.PWD }}'
-        python3 helper.py --action 'reserve' --userid $user --password $pwd
-    - name: Commit
-      run: |
-        git config --global user.email founder.yu@foxmail.com
-        git config --global user.name founder-yu
-        git add .
-        git commit -m "Update library.log" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install requirements
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Wait until 06:00 Asia/Shanghai
+        if: github.event_name == 'schedule'
+        shell: python
+        run: |
+          import time
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          now = datetime.now(ZoneInfo('Asia/Shanghai'))
+          target = now.replace(hour=6, minute=0, second=0, microsecond=0)
+          seconds = max(0, (target - now).total_seconds())
+          print(f'Current: {now:%Y-%m-%d %H:%M:%S}; waiting {seconds:.0f}s')
+          time.sleep(seconds)
+
+      - name: Reserve
+        env:
+          CSU_USER: ${{ secrets.USER }}
+          CSU_PASSWORD: ${{ secrets.PWD }}
+          CSU_ACTION: ${{ github.event_name == 'schedule' && 'reserve' || inputs.action }}
+        run: python helper.py --action "$CSU_ACTION"
+
+      - name: Save log
+        if: always()
+        run: |
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git add library.log
+          git diff --cached --quiet || git commit -m 'Update library.log'
+          git push
