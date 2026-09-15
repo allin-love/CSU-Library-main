@@ -13,7 +13,7 @@ python -m pip install -r requirements.txt
 ```ini
 [DATABASE]
 CAMPUS = '新校区'
-SEAT = ['XF5A230', 'XF5A228']
+SEAT = ['XF5B030', 'XF5F020']
 DAYS_AHEAD = 1
 ```
 
@@ -67,3 +67,7 @@ python helper.py --action reserve
 将代码提交并推送到默认分支后，先在 **Actions → CSU Library Reserve → Run workflow** 手动运行一次。手动运行默认选择 `test`，只验证云端登录和查座，不会预约；只有手动改选 `reserve` 才会立即正式预约。每日定时触发始终使用 `reserve`。
 
 GitHub Actions 的定时任务仍可能因平台排队而延迟；05:55 预启动可以降低整点排队的影响，但不是硬实时保证。
+
+## Windows 定时运行
+
+需要准时在 06:00 提交预约时，建议使用保持开机联网的 Windows 电脑运行任务计划程序。完整配置、测试和排错步骤见 [Windows 定时预约教程](docs/Windows定时预约教程.md)。
