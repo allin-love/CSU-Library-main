@@ -38,11 +38,11 @@ D:\ProgramData\anaconda3\python.exe
 ```ini
 [DATABASE]
 CAMPUS = '新校区'
-SEAT = ['XF5B030','XF5F020']
+SEAT = ['XF5A001','XF5F001']
 DAYS_AHEAD = 1
 ```
 
-- 程序优先预约 `XF5B030`，不可用时再尝试 `XF5F020`。
+- 程序优先预约 `XF5A001`，不可用时再尝试 `XF5F001`。
 - `DAYS_AHEAD = 1` 表示预约明天。
 - 预约时段由服务器返回，目前为 `07:30–22:00`，不需要手动配置。
 
@@ -99,8 +99,8 @@ Set-Location 'D:\user_doc\life\pyq\csu\CSU-Library-main'
 ```text
 登录成功
 DRY-RUN：未调用预约确认接口
-座位 XF5B030：已找到
-座位 XF5F020：已找到
+座位 XF5A001：已找到
+座位 XF5F001：已找到
 测试通过：登录和座位查询可用，未产生预约
 ```
 

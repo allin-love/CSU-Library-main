@@ -13,7 +13,7 @@ python -m pip install -r requirements.txt
 ```ini
 [DATABASE]
 CAMPUS = '新校区'
-SEAT = ['XF5B030', 'XF5F020']
+SEAT = ['XF5A001', 'XF5F001']
 DAYS_AHEAD = 1
 ```
 
